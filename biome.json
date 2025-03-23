@@ -1,0 +1,28 @@
+{
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "ignore": [
+            "node_modules"
+        ],
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "a11y": {
+                "noSvgWithoutTitle": "off",
+                "useKeyWithClickEvents": "off"
+            },
+            "style": {
+                "noNonNullAssertion": "off"
+            },
+            "correctness": {
+                "useExhaustiveDependencies": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off"
+            }
+        }
+    }
+}
