@@ -1,13 +1,109 @@
 ---
-title: Hello World
-description: Your first document
+title: Quick Start
+description: Getting started with Puedo
+icon: Album
 ---
+## Installation
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+```package-install
+puedo
+```
 
-## What is Next?
+## Usage
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
-</Cards>
+### Define Permissions
+Let's pretend our app is a CRM, and there is a button that should displayed conditionally within the header in users page.
+
+```ts title="/lib/permission/puedo.ts"
+const permissions = {
+    users: {
+        header: {
+            button: false,
+        },
+    },
+};
+```
+
+We just defined a nested permission structure and set the default visibility to `false`.
+
+
+### Define Roles
+
+Let's say we have a role called `admin` and a role called `user`.
+
+```ts title="/lib/permission/roles.ts"
+import type { Role } from "puedo";
+import { permissions } from "./puedo";
+
+export const adminRole: Role<typeof permissions> = {
+    id: "admin",
+};
+
+
+export const userRole: Role<typeof permissions> = {
+    id: "user",
+};
+```
+
+### Giving Permissions to Roles
+
+We want to give `admin` the permission to see the button, and `user` the permission to not see the button.
+Since we defined the default visibility to `false`, we need to explicitly give the permission to `admin` but not to `user`.
+
+Let's update the permissions for the `admin` role.
+
+```ts title="/lib/permission/roles.ts"
+const adminRole: Role<typeof permissions> = {
+    id: "admin",
+    permissions: {
+        users: {
+            header: {
+                button: true,
+            },
+        },
+    },
+};
+```
+
+### Initialize Puedo
+
+We need to initialize Puedo with the roles and permissions we defined.
+`Puedo` is a class that takes a configuration object with the following properties:
+
+- `accessorKey`: The key of the accessor field in the user object.
+- `permissions`: The permissions array.
+- `roles`: The roles array.
+
+
+```ts title="/lib/permission/puedo.ts"
+import { Puedo } from "puedo";
+import { adminRole, userRole } from "./roles";
+
+const puedo = new Puedo({
+    accessorKey: "role",
+    permissions,
+    roles: [adminRole, userRole],
+});
+```
+
+### Using Puedo
+
+Now we can use Puedo to check if a user has a permission.
+
+```ts title="/lib/permission/puedo.ts"
+const admin = {
+    role: "admin",
+    first_name: "Luke",
+    last_name: "Skywalker",
+};
+
+const user = {
+    role: "user",
+    first_name: "Princess",
+    last_name: "Leia",
+};
+
+
+const canAdminSeeHeaderButton = puedo.can(admin, "users.header.button") // true
+const canUserSeeHeaderButton = puedo.can(user, "users.header.button"); // false
+```

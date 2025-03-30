@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    if: ${{ github.repository_owner == 'arkemislab' }}
+    if: ${{ github.repository_owner == 'arkemis-labs' }}
     name: Create a PR for release workflow
     runs-on: ubuntu-latest
     steps:
