@@ -1,10 +1,12 @@
-export type Permission = { [key: string]: boolean | Permission };
-
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+export type Permission<U> = {
+	[key: string]: boolean | ((user: U) => boolean) | Permission<U>;
 };
 
-export type Role<T extends Permission = Permission> = {
-  id: string;
-  permissions: DeepPartial<T>;
+type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export type Role<U, T extends Permission<U> = Permission<U>> = {
+	id: string;
+	permissions: DeepPartial<T>;
 };

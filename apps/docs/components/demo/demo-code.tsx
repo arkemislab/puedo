@@ -1,16 +1,16 @@
 import { CodeBlock } from "@/components/code-block";
 
 export function DemoCode() {
-  return (
-    <CodeBlock
-      wrapper={{
-        title: "permissions.ts",
-        viewportProps: {
-          className: "flex-1",
-        },
-      }}
-      lang="ts"
-      code={`const permissions = {
+	return (
+		<CodeBlock
+			wrapper={{
+				title: "permissions.ts",
+				viewportProps: {
+					className: "flex-1",
+				},
+			}}
+			lang="ts"
+			code={`const permissions = {
   total_revenue: false,
   new_customers: false,
   active_accounts: false,
@@ -33,6 +33,7 @@ const userRole = {
   id: 'user',
   permissions: {
     total_revenue: true,
+    growth_rate: (user) => user.credits > 10 
   },
 }
 
@@ -42,6 +43,6 @@ const puedo = new Puedo({
   permissions           
 })
 `}
-    />
-  );
+		/>
+	);
 }
