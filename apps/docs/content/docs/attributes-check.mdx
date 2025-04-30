@@ -1,0 +1,78 @@
+---
+title: ABAC
+description: Attribute-Based Access Control
+icon: FileLock
+---
+
+## Attributes Check
+
+Puedo uses attributes check to determine if a user has access to a resource.
+
+## Accessor key
+
+Puedo defines `accessorKey` within its options. This key is used to access the first level of the permission object.
+
+```ts
+const permissions = {
+    read: false,
+};
+
+const roles = [
+	{
+		id: "admin", // Expected value of the accessor key
+		permissions: {
+            read: true
+        },
+	},
+];
+
+const puedo = new Puedo({
+	accessorKey: "role",
+	permissions,
+    roles,
+});
+```
+
+If we do so, we expect the user to have a `role` attribute which is the main discriminator of the permissions.
+
+```ts
+const user = {
+	name: "John Doe",
+	role: "admin", // This is the attribute that accessorKey will access
+};
+
+const canRead = puedo.can(user, "read");
+```
+
+## More attributes
+
+Puedo also supports mulitple attributes check. In order to do so, we can just use a function instead of a boolean within roles permissions.
+Given a user made like this:
+
+```ts
+const user = {
+	name: "John Doe",
+	role: "admin",
+    isEditor: true
+};
+```
+
+We can define roles like this:
+```ts
+const roles = [
+	{
+		id: "admin",
+		permissions: {
+            read: (user) => user.isEditor
+        },
+	},
+];
+```
+
+Now, if we try to check if the user has access to read, it will check if the user is an editor.
+
+```ts
+const canRead = puedo.can(user, "read") // true
+```
+
+
